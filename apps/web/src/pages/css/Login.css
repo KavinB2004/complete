@@ -13,6 +13,33 @@
   overflow: auto;
 }
 
+@media (max-width: 1024px) {
+  .login-container {
+    flex-direction: column;
+  }
+  
+  .login-hero {
+    min-height: 50vh;
+    padding: 2rem;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.5rem;
+  }
+  
+  .feature-cards {
+    display: none;
+  }
+  
+  .login-form-section {
+    min-height: 50vh;
+  }
+}
+
 /* Left Side - Hero Section */
 .login-hero {
   flex: 1;
