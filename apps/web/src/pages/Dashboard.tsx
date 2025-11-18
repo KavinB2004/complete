@@ -83,11 +83,17 @@ export default function Dashboard() {
           <h1 className="dashboard-logo">💪 Complete</h1>
           <nav className="dashboard-nav">
             <button className="nav-btn active">Dashboard</button>
-            <button className="nav-btn">My Leaderboards</button>
-            <button className="nav-btn">Browse</button>
+            <button className="nav-btn" onClick={() => navigate("/my-leaderboards")}>
+              My Leaderboards
+            </button>
           </nav>
           <div className="header-actions">
-            <button className="create-btn">+ Create Leaderboard</button>
+            <button className="friends-btn" onClick={() => navigate("/friends")}>
+              👥 Friends
+            </button>
+            <button className="create-btn" onClick={() => navigate("/create-leaderboard")}>
+              + Create Leaderboard
+            </button>
             <div className="user-menu">
               <button className="user-btn" onClick={() => setShowMenu(!showMenu)}>
                 <div className="user-avatar">{user?.email?.[0].toUpperCase()}</div>
@@ -177,7 +183,7 @@ export default function Dashboard() {
           <section className="leaderboards-section">
             <div className="section-header">
               <h3 className="section-title">Your Active Leaderboards</h3>
-              <button className="view-all-btn">View All →</button>
+              <button className="view-all-btn" onClick={() => navigate("/my-leaderboards")}>View All →</button>
             </div>
             <div className="leaderboards-grid">
               {activeLeaderboards.map((board) => (

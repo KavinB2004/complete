@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 export default function Register() {
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
@@ -13,6 +14,8 @@ export default function Register() {
     e.preventDefault();
     setErr("");
     try {
+      // TODO: Check if username is unique in Firebase
+      // TODO: Store username in user profile after signup
       await signUp(email.trim(), pw);
       navigate("/app");
     } catch (e: any) {
@@ -29,6 +32,13 @@ export default function Register() {
         </div>
       )}
       <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        <input
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={{ padding: "0.5rem", borderRadius: 8, border: "1px solid #ccc" }}
+          required
+        />
         <input
           placeholder="Email"
           value={email}

@@ -8,6 +8,9 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Forgot from "./pages/Forgot";
 import Dashboard from "./pages/Dashboard";
+import CreateLeaderboard from "./pages/CreateLeaderboard";
+import Friends from "./pages/Friends";
+import MyLeaderboards from "./pages/MyLeaderboards";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -24,6 +27,30 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-leaderboard"
+            element={
+              <ProtectedRoute>
+                <CreateLeaderboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/friends"
+            element={
+              <ProtectedRoute>
+                <Friends />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-leaderboards"
+            element={
+              <ProtectedRoute>
+                <MyLeaderboards />
               </ProtectedRoute>
             }
           />

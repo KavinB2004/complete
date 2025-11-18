@@ -76,6 +76,25 @@
   gap: 1rem;
 }
 
+.friends-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+
+.friends-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
 .create-btn {
   background: white;
   color: #667eea;
@@ -159,6 +178,16 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  animation: slideInFromLeft 0.3s ease-out;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 768px) {
@@ -375,6 +404,12 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
+}
+
+.leaderboards-section .section-title {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin: 0;
 }
 
 .section-title {
