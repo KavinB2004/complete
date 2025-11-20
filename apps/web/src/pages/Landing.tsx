@@ -1,11 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import Aurora from "../components/Aurora";
+import TiltedCard from "../components/TiltedCard";
+import GridScan from "../components/GridScan";
 import "./css/Landing.css";
 
 export default function Landing() {
   const navigate = useNavigate();
   const [stepsVisible, setStepsVisible] = useState([false, false, false, false]);
   const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [whyCardIndex, setWhyCardIndex] = useState(0);
+  const whySectionRef = useRef<HTMLElement>(null);
+  const scrollProgressRef = useRef(0);
+  const landingContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observers = stepsRef.current.map((step, index) => {
@@ -39,10 +46,62 @@ export default function Landing() {
     };
   }, [stepsVisible]);
 
+  // Why section scroll-locking effect
+  useEffect(() => {
+    const landingContainer = landingContainerRef.current;
+    if (!landingContainer) return;
+
+    const handleScroll = () => {
+      const whySection = whySectionRef.current;
+      if (!whySection) return;
+
+      const rect = whySection.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      
+      // Check if section is locked in viewport
+      if (rect.top <= 0 && rect.bottom >= viewportHeight) {
+        // Calculate scroll progress (0 to 1)
+        const sectionScrollHeight = rect.height - viewportHeight;
+        const scrolledAmount = -rect.top;
+        const progress = Math.max(0, Math.min(1, scrolledAmount / sectionScrollHeight));
+        scrollProgressRef.current = progress;
+        
+        // Map progress to card index (0-3) with clear thresholds
+        let newIndex = 0;
+        if (progress >= 0.75) {
+          newIndex = 3;
+        } else if (progress >= 0.5) {
+          newIndex = 2;
+        } else if (progress >= 0.25) {
+          newIndex = 1;
+        } else {
+          newIndex = 0;
+        }
+        
+        console.log('Progress:', progress.toFixed(3), 'Card:', newIndex, 'Top:', rect.top.toFixed(0), 'Bottom:', rect.bottom.toFixed(0));
+        setWhyCardIndex(newIndex);
+      }
+    };
+
+    // Listen to scroll on the landing container, not window
+    landingContainer.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    
+    return () => landingContainer.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="landing-container">
+    <div className="landing-container" ref={landingContainerRef}>
       {/* Hero Section */}
       <section className="hero-section">
+        <div className="aurora-background">
+          <Aurora
+            colorStops={["#667eea", "#764ba2", "#667eea"]}
+            blend={0.6}
+            amplitude={1.2}
+            speed={0.8}
+          />
+        </div>
         <div className="hero-background">
           <div className="floating-orb orb-1" />
           <div className="floating-orb orb-2" />
@@ -82,11 +141,19 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Why Complete Section */}
-      <section className="why-section">
-        <h2 className="section-heading">Why goals fail (and how we fix it)</h2>
-        <div className="why-grid">
-          <div className="why-card">
+      {/* Why Complete Section - Scroll-locked */}
+      <section className="why-section-scroll" ref={whySectionRef}>
+        <div className={`why-sticky-container card-${whyCardIndex}`}>
+          <h2 className="section-heading">Why goals fail (and how we fix it)</h2>
+          
+          {/* Card 0: No Accountability - CENTER */}
+          <div className={`why-card-animated card-center ${
+            whyCardIndex >= 0 && whyCardIndex < 3 ? 'visible' : ''
+          } ${
+            whyCardIndex === 0 ? 'active' : ''
+          } ${
+            whyCardIndex === 3 ? 'exit-up' : ''
+          }`}>
             <div className="why-icon">😴</div>
             <h3 className="why-title">No Accountability</h3>
             <p className="why-description">
@@ -94,7 +161,15 @@ export default function Landing() {
               Suddenly, skipping a workout means falling behind.
             </p>
           </div>
-          <div className="why-card">
+
+          {/* Card 1: Invisible Progress - LEFT */}
+          <div className={`why-card-animated card-left ${
+            whyCardIndex >= 1 && whyCardIndex < 3 ? 'visible' : ''
+          } ${
+            whyCardIndex === 1 ? 'active' : ''
+          } ${
+            whyCardIndex === 3 ? 'exit-left' : ''
+          }`}>
             <div className="why-icon">📊</div>
             <h3 className="why-title">Invisible Progress</h3>
             <p className="why-description">
@@ -102,7 +177,15 @@ export default function Landing() {
               Real-time rankings create urgency and excitement.
             </p>
           </div>
-          <div className="why-card">
+
+          {/* Card 2: It's Boring - RIGHT */}
+          <div className={`why-card-animated card-right ${
+            whyCardIndex >= 2 && whyCardIndex < 3 ? 'visible' : ''
+          } ${
+            whyCardIndex === 2 ? 'active' : ''
+          } ${
+            whyCardIndex === 3 ? 'exit-right' : ''
+          }`}>
             <div className="why-icon">🎮</div>
             <h3 className="why-title">It's Boring</h3>
             <p className="why-description">
@@ -110,7 +193,11 @@ export default function Landing() {
               Make it a game you actually want to play.
             </p>
           </div>
-          <div className="why-card honesty-card">
+
+          {/* Card 3: Built on Honesty - Full Screen */}
+          <div className={`why-card-animated honesty-final ${
+            whyCardIndex === 3 ? 'active' : 'hidden'
+          }`}>
             <div className="why-icon">✨</div>
             <h3 className="why-title">Built on Honesty</h3>
             <p className="why-description">
@@ -192,48 +279,132 @@ export default function Landing() {
       <section className="features-section">
         <h2 className="section-heading">Built for Competition</h2>
         <div className="features-grid">
-          <div className="feature-card">
-            <div className="feature-icon">⚡</div>
-            <h3 className="feature-title">Real-Time Leaderboards</h3>
-            <p className="feature-description">
-              See live rankings update as people submit progress. Know exactly where you stand.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">✅</div>
-            <h3 className="feature-title">Manager Approval System</h3>
-            <p className="feature-description">
-              Keep it fair — only the challenge creator can approve submissions. No cheating.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">🎁</div>
-            <h3 className="feature-title">Custom Rewards & Stakes</h3>
-            <p className="feature-description">
-              Set prizes for winners and funny punishments for losers. Make it personal.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">📱</div>
-            <h3 className="feature-title">Any Goal, Any Timeline</h3>
-            <p className="feature-description">
-              Fitness, coding, reading, habits — if you can track it, you can compete on it.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">💬</div>
-            <h3 className="feature-title">Trash Talk Mode</h3>
-            <p className="feature-description">
-              Message your rivals. Talk smack. Keep the banter flowing. Competition is fun.
-            </p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">📊</div>
-            <h3 className="feature-title">Progress History</h3>
-            <p className="feature-description">
-              Track your journey. See past challenges, your wins, and how you've improved.
-            </p>
-          </div>
+          <TiltedCard
+            imageSrc=""
+            containerHeight="220px"
+            containerWidth="280px"
+            imageHeight="220px"
+            imageWidth="280px"
+            rotateAmplitude={12}
+            scaleOnHover={1.15}
+            showMobileWarning={false}
+            showTooltip={false}
+            displayOverlayContent={true}
+            overlayContent={
+              <div className="feature-card-content">
+                <div className="feature-icon">⚡</div>
+                <h3 className="feature-title">Real-Time Leaderboards</h3>
+                <p className="feature-description">
+                  See live rankings update as people submit progress. Know exactly where you stand.
+                </p>
+              </div>
+            }
+          />
+          <TiltedCard
+            imageSrc=""
+            containerHeight="220px"
+            containerWidth="280px"
+            imageHeight="220px"
+            imageWidth="280px"
+            rotateAmplitude={12}
+            scaleOnHover={1.15}
+            showMobileWarning={false}
+            showTooltip={false}
+            displayOverlayContent={true}
+            overlayContent={
+              <div className="feature-card-content">
+                <div className="feature-icon">✅</div>
+                <h3 className="feature-title">Manager Approval System</h3>
+                <p className="feature-description">
+                  Keep it fair — only the challenge creator can approve submissions. No cheating.
+                </p>
+              </div>
+            }
+          />
+          <TiltedCard
+            imageSrc=""
+            containerHeight="220px"
+            containerWidth="280px"
+            imageHeight="220px"
+            imageWidth="280px"
+            rotateAmplitude={12}
+            scaleOnHover={1.15}
+            showMobileWarning={false}
+            showTooltip={false}
+            displayOverlayContent={true}
+            overlayContent={
+              <div className="feature-card-content">
+                <div className="feature-icon">🎁</div>
+                <h3 className="feature-title">Custom Rewards & Stakes</h3>
+                <p className="feature-description">
+                  Set prizes for winners and funny punishments for losers. Make it personal.
+                </p>
+              </div>
+            }
+          />
+          <TiltedCard
+            imageSrc=""
+            containerHeight="220px"
+            containerWidth="280px"
+            imageHeight="220px"
+            imageWidth="280px"
+            rotateAmplitude={12}
+            scaleOnHover={1.15}
+            showMobileWarning={false}
+            showTooltip={false}
+            displayOverlayContent={true}
+            overlayContent={
+              <div className="feature-card-content">
+                <div className="feature-icon">📱</div>
+                <h3 className="feature-title">Any Goal, Any Timeline</h3>
+                <p className="feature-description">
+                  Fitness, coding, reading, habits — if you can track it, you can compete on it.
+                </p>
+              </div>
+            }
+          />
+          <TiltedCard
+            imageSrc=""
+            containerHeight="220px"
+            containerWidth="280px"
+            imageHeight="220px"
+            imageWidth="280px"
+            rotateAmplitude={12}
+            scaleOnHover={1.15}
+            showMobileWarning={false}
+            showTooltip={false}
+            displayOverlayContent={true}
+            overlayContent={
+              <div className="feature-card-content">
+                <div className="feature-icon">💬</div>
+                <h3 className="feature-title">Trash Talk Mode</h3>
+                <p className="feature-description">
+                  Message your rivals. Talk smack. Keep the banter flowing. Competition is fun.
+                </p>
+              </div>
+            }
+          />
+          <TiltedCard
+            imageSrc=""
+            containerHeight="220px"
+            containerWidth="280px"
+            imageHeight="220px"
+            imageWidth="280px"
+            rotateAmplitude={12}
+            scaleOnHover={1.15}
+            showMobileWarning={false}
+            showTooltip={false}
+            displayOverlayContent={true}
+            overlayContent={
+              <div className="feature-card-content">
+                <div className="feature-icon">📊</div>
+                <h3 className="feature-title">Progress History</h3>
+                <p className="feature-description">
+                  Track your journey. See past challenges, your wins, and how you've improved.
+                </p>
+              </div>
+            }
+          />
         </div>
       </section>
 
@@ -287,6 +458,20 @@ export default function Landing() {
 
       {/* Final CTA Section */}
       <section className="final-cta-section">
+        <div className="grid-scan-background">
+          <GridScan
+            sensitivity={0.55}
+            lineThickness={1}
+            linesColor="#392e4e"
+            gridScale={0.1}
+            scanColor="#a78bfa"
+            scanOpacity={0.6}
+            enablePost
+            bloomIntensity={0.8}
+            chromaticAberration={0.002}
+            noiseIntensity={0.01}
+          />
+        </div>
         <div className="final-cta-content">
           <h2 className="final-cta-title">Ready to Actually Complete Your Goals?</h2>
           <p className="final-cta-subtitle">

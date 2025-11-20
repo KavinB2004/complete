@@ -3,9 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import AuthLayout from "./components/AuthLayout";
 import Forgot from "./pages/Forgot";
 import Dashboard from "./pages/Dashboard";
 import CreateLeaderboard from "./pages/CreateLeaderboard";
@@ -18,9 +16,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<AuthLayout />} />
+          <Route path="/login" element={<AuthLayout />} />
+          <Route path="/register" element={<AuthLayout />} />
           <Route path="/forgot" element={<Forgot />} />
           <Route
             path="/app"
@@ -54,7 +52,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Landing />} />
+          <Route path="*" element={<AuthLayout />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
