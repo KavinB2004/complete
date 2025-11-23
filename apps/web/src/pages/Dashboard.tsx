@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./css/Dashboard.css";
+import "./css/Dashboard_Dark.css";
 
 export default function Dashboard() {
   const { user, logOut } = useAuth();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
+  const [viewMode, setViewMode] = useState(false)
 
   const handleLogout = async () => {
     await logOut();
@@ -80,7 +81,7 @@ export default function Dashboard() {
       {/* Header/Navigation */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1 className="dashboard-logo">💪 Complete</h1>
+          <h1 className="dashboard-logo" onClick={() => navigate("/")}>💪 Complete</h1>
           <nav className="dashboard-nav">
             <button className="nav-btn active">Dashboard</button>
             <button className="nav-btn" onClick={() => navigate("/my-leaderboards")}>
@@ -107,6 +108,9 @@ export default function Dashboard() {
                   </button>
                   <button className="dropdown-item" onClick={() => navigate("/settings")}>
                     Settings
+                  </button>
+                  <button className="dropdown-item" onClick={() => setViewMode(true)}>
+                    Dark Mode
                   </button>
                   <div className="dropdown-divider" />
                   <button className="dropdown-item logout" onClick={handleLogout}>

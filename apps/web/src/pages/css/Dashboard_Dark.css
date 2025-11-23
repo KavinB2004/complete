@@ -1,7 +1,7 @@
 /* Dashboard Container */
 .dashboard-container {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: #363637;
   width: 100vw;
   position: fixed;
   top: 0;
@@ -39,6 +39,10 @@
   font-weight: bold;
   margin: 0;
   white-space: nowrap;
+}
+
+.dashboard-logo:hover{
+  /*Need to make sure user can see that it is clickable*/
 }
 
 .dashboard-nav {
@@ -218,12 +222,12 @@
 
 .welcome-title {
   font-size: 2rem;
-  color: #1a1a1a;
+  color: white;
   margin: 0 0 0.5rem 0;
 }
 
 .welcome-subtitle {
-  color: #6b7280;
+  color: white;
   font-size: 1.1rem;
   margin: 0;
 }
@@ -252,7 +256,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  background: white;
+  background: rgb(25, 25, 25);
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -262,7 +266,7 @@
 }
 
 .stat-card {
-  background: #f9fafb;
+  background: #363637;
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -296,13 +300,13 @@
 .stat-value {
   font-size: 2rem;
   font-weight: bold;
-  color: #1a1a1a;
+  color: white;
   line-height: 1;
   margin-bottom: 0.25rem;
 }
 
 .stat-label {
-  color: #6b7280;
+  color: white;
   font-size: 0.9rem;
 }
 
@@ -373,8 +377,8 @@
 .trash-talk-btn {
   width: 100%;
   padding: 0.75rem;
-  background: white;
-  color: #667eea;
+  background: #363637;
+  color: white;
   border: none;
   border-radius: 8px;
   font-weight: 700;
@@ -391,7 +395,7 @@
 /* Leaderboards Section */
 .leaderboards-section {
   flex: 1;
-  background: white;
+  background: black;
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -408,7 +412,7 @@
 
 .leaderboards-section .section-title {
   font-size: 1.5rem;
-  color: #1a1a1a;
+  color: white;
   margin: 0;
 }
 
@@ -446,7 +450,7 @@
 }
 
 .leaderboard-card {
-  background: #f9fafb;
+  background: #363637;
   border-radius: 12px;
   padding: 1.5rem;
   border: 1px solid #e5e7eb;
@@ -468,9 +472,13 @@
 
 .leaderboard-name {
   font-size: 1.2rem;
-  color: #1a1a1a;
+  color: white;
   margin: 0;
   flex: 1;
+}
+
+.meta-text{
+    color: white;
 }
 
 .rank-badge {
@@ -517,7 +525,7 @@
 
 .progress-text {
   font-weight: 600;
-  color: #1a1a1a;
+  color: white;
 }
 
 .progress-percentage {
@@ -561,7 +569,7 @@
 .leaderboard-rewards {
   margin-bottom: 1rem;
   padding: 0.75rem;
-  background: #f9fafb;
+  background: #242424;
   border-radius: 8px;
   font-size: 0.85rem;
 }
@@ -578,11 +586,11 @@
 
 .reward-label {
   font-weight: 600;
-  color: #374151;
+  color: white;
 }
 
 .reward-text {
-  color: #6b7280;
+  color: white;
 }
 
 .view-leaderboard-btn {
@@ -603,7 +611,7 @@
 
 /* Activity Section */
 .activity-section {
-  background: white;
+  background: #161617;
   border-radius: 16px;
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -641,7 +649,7 @@
 
 .activity-text {
   margin: 0 0 0.25rem 0;
-  color: #1a1a1a;
+  color: white;
 }
 
 .activity-user {
@@ -650,6 +658,6 @@
 
 .activity-meta {
   margin: 0;
-  color: #6b7280;
+  color: white;
   font-size: 0.85rem;
 }

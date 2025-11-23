@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./css/MyLeaderboards.css";
 
-export default function MyLeaderboards() {
+export default function ManagerLeaderboardViewer() {
   const { user, logOut } = useAuth();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
@@ -108,7 +108,7 @@ export default function MyLeaderboards() {
       {/* Header/Navigation */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1 className="dashboard-logo" onClick={() => navigate("/")}>💪 Complete</h1>
+          <h1 className="dashboard-logo">💪 Complete</h1>
           <nav className="dashboard-nav">
             <button className="nav-btn" onClick={() => navigate("/app")}>
               Dashboard

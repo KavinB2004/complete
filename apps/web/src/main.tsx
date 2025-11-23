@@ -10,6 +10,7 @@ import CreateLeaderboard from "./pages/CreateLeaderboard";
 import Friends from "./pages/Friends";
 import MyLeaderboards from "./pages/MyLeaderboards";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ManagerLeaderboardViewer from "./pages/ManagerLeaderboardViewer"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -49,6 +50,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             element={
               <ProtectedRoute>
                 <MyLeaderboards />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager-leaderboards"
+            element={
+              <ProtectedRoute>
+                <ManagerLeaderboardViewer />
               </ProtectedRoute>
             }
           />
