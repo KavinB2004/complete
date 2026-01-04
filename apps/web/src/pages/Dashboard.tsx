@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import "./css/Dashboard_Dark.css";
 
 export default function Dashboard() {
-  const { user, logOut, theme, setTheme } = useAuth();
+  const { user, logOut } = useAuth();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const [isEditingBoards, setIsEditingBoards] = useState(false);
@@ -16,11 +16,6 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await logOut();
     navigate("/login");
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
   };
 
   // Mock data - will be replaced with real data later
@@ -266,7 +261,12 @@ export default function Dashboard() {
             )}
             <div className="leaderboards-grid">
               {activeLeaderboards.map((board) => (
-                <div key={board.id} className="leaderboard-card">
+                <div 
+                  key={board.id} 
+                  className="leaderboard-card"
+                  onClick={() => navigate(`/my-leaderboards?id=${board.id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="leaderboard-header">
                     <h4 className="leaderboard-name">{board.name}</h4>
                     <span className={`rank-badge rank-${board.rank}`}>#{board.rank}</span>

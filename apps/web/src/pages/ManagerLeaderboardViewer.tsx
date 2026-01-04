@@ -1,119 +1,146 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import "./css/MyLeaderboards.css";
+import "./css/ManagerLeaderboard_Dark.css";
 
 export default function ManagerLeaderboardViewer() {
   const { user, logOut } = useAuth();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
+  const [isEditingDetails, setIsEditingDetails] = useState(false);
+  const [isAddingParticipant, setIsAddingParticipant] = useState(false);
+  const [isDeclaring, setIsDeclaring] = useState(false);
+  const [hoveredPlayer, setHoveredPlayer] = useState<string | null>(null);
+  const [editDetails, setEditDetails] = useState({
+    name: "50 Workouts in 30 Days",
+    goal: 50,
+    reward: "Winner picks next challenge",
+    punishment: "Last place buys pizza",
+  });
+  const [newParticipant, setNewParticipant] = useState("");
 
   const handleLogout = async () => {
     await logOut();
     navigate("/login");
   };
-  
+
   // Mock data - will be replaced with Firebase data
-  const leaderboards = [
-    {
-      id: 1,
-      name: "50 Workouts in 30 Days",
-      goal: 50,
-      daysLeft: 12,
-      reward: "Winner picks next challenge",
-      punishment: "Last place buys pizza",
-      standings: [
-        { rank: 1, username: "sarah_codes", completions: 47, percentage: 94 },
-        { rank: 2, username: "you", completions: 23, percentage: 46 },
-        { rank: 3, username: "alex_workout", completions: 19, percentage: 38 },
-        { rank: 4, username: "mike_runner", completions: 15, percentage: 30 },
-        { rank: 5, username: "emma_reads", completions: 12, percentage: 24 },
-        { rank: 6, username: "john_lifts", completions: 8, percentage: 16 },
-        { rank: 7, username: "lisa_yoga", completions: 6, percentage: 12 },
-        { rank: 8, username: "tom_swims", completions: 3, percentage: 6 },
-      ],
-    },
-    {
-      id: 2,
-      name: "100 LeetCode Problems",
-      goal: 100,
-      daysLeft: 45,
-      reward: "$50 Amazon gift card",
-      punishment: "Post embarrassing story",
-      standings: [
-        { rank: 1, username: "you", completions: 47, percentage: 47 },
-        { rank: 2, username: "alex_workout", completions: 42, percentage: 42 },
-        { rank: 3, username: "sarah_codes", completions: 38, percentage: 38 },
-        { rank: 4, username: "mike_runner", completions: 28, percentage: 28 },
-        { rank: 5, username: "emma_reads", completions: 15, percentage: 15 },
-      ],
-    },
-    {
-      id: 3,
-      name: "Daily 10K Steps",
-      goal: 30,
-      daysLeft: 12,
-      reward: "Bragging rights",
-      punishment: "Do everyone's chores",
-      standings: [
-        { rank: 1, username: "mike_runner", completions: 28, percentage: 93 },
-        { rank: 2, username: "sarah_codes", completions: 25, percentage: 83 },
-        { rank: 3, username: "alex_workout", completions: 22, percentage: 73 },
-        { rank: 4, username: "you", completions: 18, percentage: 60 },
-        { rank: 5, username: "emma_reads", completions: 16, percentage: 53 },
-        { rank: 6, username: "john_lifts", completions: 12, percentage: 40 },
-        { rank: 7, username: "lisa_yoga", completions: 10, percentage: 33 },
-        { rank: 8, username: "tom_swims", completions: 8, percentage: 27 },
-        { rank: 9, username: "amy_hikes", completions: 5, percentage: 17 },
-        { rank: 10, username: "dave_bikes", completions: 4, percentage: 13 },
-        { rank: 11, username: "kate_runs", completions: 3, percentage: 10 },
-        { rank: 12, username: "paul_climbs", completions: 1, percentage: 3 },
-      ],
-    },
-    {
-      id: 4,
-      name: "Read 20 Books",
-      goal: 20,
-      daysLeft: 90,
-      reward: "Book club champion",
-      punishment: "Write book report for winner",
-      standings: [
-        { rank: 1, username: "emma_reads", completions: 12, percentage: 60 },
-        { rank: 2, username: "sarah_codes", completions: 10, percentage: 50 },
-        { rank: 3, username: "you", completions: 8, percentage: 40 },
-        { rank: 4, username: "alex_workout", completions: 6, percentage: 30 },
-        { rank: 5, username: "mike_runner", completions: 4, percentage: 20 },
-        { rank: 6, username: "john_lifts", completions: 2, percentage: 10 },
-      ],
-    },
-  ];
+  const [leaderboard, setLeaderboard] = useState({
+    id: 1,
+    name: "50 Workouts in 30 Days",
+    goal: 50,
+    daysLeft: 12,
+    reward: "Winner picks next challenge",
+    punishment: "Last place buys pizza",
+    status: "active",
+  });
 
-  const [currentLeaderboardIndex, setCurrentLeaderboardIndex] = useState(0);
-  const currentLeaderboard = leaderboards[currentLeaderboardIndex];
+  const [standings, setStandings] = useState([
+    { 
+      rank: 1, 
+      username: "sarah_codes", 
+      completions: 47, 
+      percentage: 94,
+      streak: 15,
+      daysSinceCompletion: 0,
+      participationDays: 28,
+    },
+    { 
+      rank: 2, 
+      username: "you", 
+      completions: 23, 
+      percentage: 46,
+      streak: 8,
+      daysSinceCompletion: 0,
+      participationDays: 20,
+    },
+    { 
+      rank: 3, 
+      username: "alex_workout", 
+      completions: 19, 
+      percentage: 38,
+      streak: 5,
+      daysSinceCompletion: 1,
+      participationDays: 18,
+    },
+    { 
+      rank: 4, 
+      username: "mike_runner", 
+      completions: 15, 
+      percentage: 30,
+      streak: 3,
+      daysSinceCompletion: 2,
+      participationDays: 15,
+    },
+  ]);
 
-  const handlePrevious = () => {
-    setCurrentLeaderboardIndex((prev) => 
-      prev === 0 ? leaderboards.length - 1 : prev - 1
+  const [pendingSubmissions, setPendingSubmissions] = useState([
+    { username: "sarah_codes", submittedAmount: 1, submittedAt: "2 hours ago" },
+    { username: "alex_workout", submittedAmount: 2, submittedAt: "30 mins ago" },
+  ]);
+
+  const handleApproveSubmission = (username: string, amount: number) => {
+    setStandings(prev => 
+      prev.map(p => 
+        p.username === username 
+          ? { ...p, completions: p.completions + amount, percentage: Math.round(((p.completions + amount) / leaderboard.goal) * 100) }
+          : p
+      ).sort((a, b) => b.completions - a.completions).map((p, i) => ({ ...p, rank: i + 1 }))
     );
+    setPendingSubmissions(prev => prev.filter(s => s.username !== username));
   };
 
-  const handleNext = () => {
-    setCurrentLeaderboardIndex((prev) => 
-      prev === leaderboards.length - 1 ? 0 : prev + 1
+  const handleDeclareWinner = () => {
+    setLeaderboard(prev => ({ ...prev, status: "completed" }));
+    setIsDeclaring(false);
+  };
+
+  const handleUpdateDetails = () => {
+    setLeaderboard(prev => ({
+      ...prev,
+      name: editDetails.name,
+      goal: editDetails.goal,
+      reward: editDetails.reward,
+      punishment: editDetails.punishment,
+    }));
+    setIsEditingDetails(false);
+  };
+
+  const handleAddParticipant = () => {
+    if (newParticipant.trim()) {
+      const newRank = standings.length + 1;
+      setStandings(prev => [...prev, {
+        rank: newRank,
+        username: newParticipant,
+        completions: 0,
+        percentage: 0,
+        streak: 0,
+        daysSinceCompletion: 0,
+        participationDays: 0,
+      }]);
+      setNewParticipant("");
+      setIsAddingParticipant(false);
+    }
+  };
+
+  const handleRemoveParticipant = (username: string) => {
+    setStandings(prev => 
+      prev.filter(p => p.username !== username)
+        .map((p, i) => ({ ...p, rank: i + 1 }))
     );
   };
 
   return (
-    <div className="my-leaderboards-container">
+    <div className="manager-leaderboard-container">
       {/* Header/Navigation */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1 className="dashboard-logo">💪 Complete</h1>
+          <h1 className="dashboard-logo" onClick={() => navigate("/")}>💪 Complete</h1>
           <nav className="dashboard-nav">
-            <button className="nav-btn" onClick={() => navigate("/app")}>
+            <button className="nav-btn" onClick={() => navigate("/dashboard")}>
               Dashboard
             </button>
-            <button className="nav-btn active">My Leaderboards</button>
+            <button className="nav-btn active">Manager View</button>
           </nav>
           <div className="header-actions">
             <button className="friends-btn" onClick={() => navigate("/friends")}>
@@ -130,9 +157,6 @@ export default function ManagerLeaderboardViewer() {
                 <div className="dropdown-menu">
                   <div className="dropdown-item">{user?.email}</div>
                   <div className="dropdown-divider" />
-                  <button className="dropdown-item" onClick={() => navigate("/profile")}>
-                    Profile
-                  </button>
                   <button className="dropdown-item" onClick={() => navigate("/settings")}>
                     Settings
                   </button>
@@ -147,95 +171,157 @@ export default function ManagerLeaderboardViewer() {
         </div>
       </header>
 
-      <div className="my-leaderboards-content">
-        {/* Navigation Arrows */}
-        <div className="leaderboard-navigation">
-          <button className="nav-arrow" onClick={handlePrevious}>
-            ←
-          </button>
-          <div className="leaderboard-selector">
-            <h2 className="leaderboard-main-title">{currentLeaderboard.name}</h2>
-            <div className="leaderboard-counter">
-              {currentLeaderboardIndex + 1} of {leaderboards.length}
-            </div>
+      <div className="manager-content">
+        {/* Leaderboard Header */}
+        <div className="manager-header">
+          <div className="manager-title-section">
+            <h2 className="manager-title">{leaderboard.name}</h2>
+            <span className={`status-badge ${leaderboard.status}`}>{leaderboard.status.toUpperCase()}</span>
           </div>
-          <button className="nav-arrow" onClick={handleNext}>
-            →
-          </button>
-        </div>
-
-        {/* Leaderboard Info */}
-        <div className="leaderboard-info-section">
-          <div className="info-card">
-            <div className="info-icon">🎯</div>
-            <div className="info-content">
-              <div className="info-label">Goal</div>
-              <div className="info-value">{currentLeaderboard.goal} completions</div>
-            </div>
-          </div>
-          <div className="info-card">
-            <div className="info-icon">⏰</div>
-            <div className="info-content">
-              <div className="info-label">Time Left</div>
-              <div className="info-value">{currentLeaderboard.daysLeft} days</div>
-            </div>
-          </div>
-          <div className="info-card reward-card">
-            <div className="info-icon">🏆</div>
-            <div className="info-content">
-              <div className="info-label">Winner's Reward</div>
-              <div className="info-value">{currentLeaderboard.reward}</div>
-            </div>
-          </div>
-          <div className="info-card punishment-card">
-            <div className="info-icon">😅</div>
-            <div className="info-content">
-              <div className="info-label">Last Place</div>
-              <div className="info-value">{currentLeaderboard.punishment}</div>
-            </div>
+          <div className="manager-actions">
+            <button className="manager-btn primary" onClick={() => setIsEditingDetails(true)}>
+              ✏️ Edit Details
+            </button>
+            <button className="manager-btn secondary" onClick={() => setIsDeclaring(true)}>
+              🏆 Declare Winner
+            </button>
           </div>
         </div>
 
-        {/* Standings */}
+        {/* Edit Details Modal */}
+        {isEditingDetails && (
+          <div className="modal-overlay" onClick={() => setIsEditingDetails(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>Edit Leaderboard Details</h3>
+              <div className="form-group">
+                <label>Name</label>
+                <input type="text" value={editDetails.name} onChange={(e) => setEditDetails({...editDetails, name: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Goal</label>
+                <input type="number" value={editDetails.goal} onChange={(e) => setEditDetails({...editDetails, goal: parseInt(e.target.value)})} />
+              </div>
+              <div className="form-group">
+                <label>Reward</label>
+                <input type="text" value={editDetails.reward} onChange={(e) => setEditDetails({...editDetails, reward: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Punishment</label>
+                <input type="text" value={editDetails.punishment} onChange={(e) => setEditDetails({...editDetails, punishment: e.target.value})} />
+              </div>
+              <div className="modal-actions">
+                <button className="btn-cancel" onClick={() => setIsEditingDetails(false)}>Cancel</button>
+                <button className="btn-save" onClick={handleUpdateDetails}>Save</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Declare Winner Modal */}
+        {isDeclaring && (
+          <div className="modal-overlay" onClick={() => setIsDeclaring(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>🏆 Declare Winner</h3>
+              <p className="winner-name">{standings[0].username}</p>
+              <p className="winner-stats">{standings[0].completions} / {leaderboard.goal} completions</p>
+              <p className="modal-text">Are you sure you want to declare this leaderboard as complete?</p>
+              <div className="modal-actions">
+                <button className="btn-cancel" onClick={() => setIsDeclaring(false)}>Cancel</button>
+                <button className="btn-save" onClick={handleDeclareWinner}>Declare Winner</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pending Submissions */}
+        {pendingSubmissions.length > 0 && (
+          <div className="pending-section">
+            <h3>⏳ Pending Submissions ({pendingSubmissions.length})</h3>
+            <div className="pending-list">
+              {pendingSubmissions.map((submission, idx) => (
+                <div key={idx} className="pending-item">
+                  <div className="pending-info">
+                    <span className="pending-username">{submission.username}</span>
+                    <span className="pending-amount">+ {submission.submittedAmount}</span>
+                    <span className="pending-time">{submission.submittedAt}</span>
+                  </div>
+                  <div className="pending-actions">
+                    <button className="btn-approve" onClick={() => handleApproveSubmission(submission.username, submission.submittedAmount)}>
+                      ✓ Approve
+                    </button>
+                    <button className="btn-reject">✕ Reject</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Manage Participants */}
+        <div className="manage-section">
+          <h3>👥 Manage Participants ({standings.length})</h3>
+          <div className="participant-controls">
+            {isAddingParticipant ? (
+              <div className="add-participant-form">
+                <input 
+                  type="text" 
+                  placeholder="Username" 
+                  value={newParticipant}
+                  onChange={(e) => setNewParticipant(e.target.value)}
+                />
+                <button className="btn-add" onClick={handleAddParticipant}>Add</button>
+                <button className="btn-cancel" onClick={() => setIsAddingParticipant(false)}>Cancel</button>
+              </div>
+            ) : (
+              <button className="btn-add-participant" onClick={() => setIsAddingParticipant(true)}>
+                + Add Participant
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Leaderboard with Hover Details */}
         <div className="standings-section">
-          <h3 className="standings-title">Complete Standings</h3>
+          <h3>📊 Standings</h3>
           <div className="standings-list">
-            {currentLeaderboard.standings.map((standing) => (
-              <div
-                key={standing.rank}
-                className={`standing-row ${standing.username === "you" ? "current-user" : ""} ${
-                  standing.rank === 1 ? "first-place" : ""
-                } ${
-                  standing.rank === currentLeaderboard.standings.length ? "last-place" : ""
-                }`}
+            {standings.map((player) => (
+              <div 
+                key={player.username}
+                className="standing-row"
+                onMouseEnter={() => setHoveredPlayer(player.username)}
+                onMouseLeave={() => setHoveredPlayer(null)}
               >
-                <div className="standing-rank">
-                  {standing.rank === 1 && "🥇"}
-                  {standing.rank === 2 && "🥈"}
-                  {standing.rank === 3 && "🥉"}
-                  {standing.rank > 3 && `#${standing.rank}`}
-                </div>
-                <div className="standing-user">
-                  <div className="standing-avatar">
-                    {standing.username[0].toUpperCase()}
-                  </div>
-                  <div className="standing-username">
-                    {standing.username === "you" ? "You" : standing.username}
+                <div className="standing-left">
+                  <div className="standing-rank">{player.rank === 1 ? '🥇' : player.rank === 2 ? '🥈' : player.rank === 3 ? '🥉' : `#${player.rank}`}</div>
+                  <div className="standing-user-info">
+                    <div className="standing-username">{player.username}</div>
+                    <div className="standing-progress-bar">
+                      <div className="progress-fill" style={{ width: `${player.percentage}%` }} />
+                    </div>
+                    <div className="standing-stats">{player.completions} / {leaderboard.goal}</div>
                   </div>
                 </div>
-                <div className="standing-progress">
-                  <div className="standing-stats">
-                    <span className="standing-completions">
-                      {standing.completions} / {currentLeaderboard.goal}
-                    </span>
-                    <span className="standing-percentage">{standing.percentage}%</span>
+
+                {hoveredPlayer === player.username && (
+                  <div className="hover-details">
+                    <div className="detail-item">
+                      <span className="detail-label">🔥 Streak:</span>
+                      <span className="detail-value">{player.streak} days</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">⏰ Last Completion:</span>
+                      <span className="detail-value">{player.daysSinceCompletion === 0 ? 'Today' : `${player.daysSinceCompletion}d ago`}</span>
+                    </div>
+                    <div className="detail-item">
+                      <span className="detail-label">📅 Active Days:</span>
+                      <span className="detail-value">{player.participationDays} / {leaderboard.daysLeft || 30}</span>
+                    </div>
                   </div>
-                  <div className="standing-bar">
-                    <div
-                      className="standing-fill"
-                      style={{ width: `${standing.percentage}%` }}
-                    />
-                  </div>
+                )}
+
+                <div className="standing-actions">
+                  <button className="btn-edit-score">Edit</button>
+                  <button className="btn-remove" onClick={() => handleRemoveParticipant(player.username)}>Remove</button>
                 </div>
               </div>
             ))}
