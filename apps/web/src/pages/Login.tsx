@@ -1,6 +1,8 @@
 import { type FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
 import "./css/Login.css";
 
 export default function Login() {
@@ -15,7 +17,13 @@ export default function Login() {
     setErr("");
     try {
       await signIn(email.trim(), pw);
-      navigate("/app");
+      
+      // Wait for auth state to update before navigating
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          navigate("/dashboard");
+        }
+      });
     } catch (e: any) {
       setErr(e.message);
     }

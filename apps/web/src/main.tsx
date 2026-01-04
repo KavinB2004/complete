@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext";
 import AuthLayout from "./components/AuthLayout";
 import Forgot from "./pages/Forgot";
 import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 import CreateLeaderboard from "./pages/CreateLeaderboard";
 import Friends from "./pages/Friends";
 import MyLeaderboards from "./pages/MyLeaderboards";
@@ -23,6 +24,22 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Route path="/forgot" element={<Forgot />} />
           <Route
             path="/app"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />

@@ -21,6 +21,8 @@ import {
 type AuthCtx = {
   user: User | null;
   loading: boolean;
+  theme: "light" | "dark";
+  setTheme: (theme: "light" | "dark") => void;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -33,6 +35,10 @@ const AuthContext = createContext<AuthCtx | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [theme, setThemeState] = useState<"light" | "dark">(() => {
+    const saved = localStorage.getItem("theme");
+    return (saved as "light" | "dark") || "dark";
+  });
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -62,9 +68,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signOut(auth);
   };
 
+  const setTheme = (newTheme: "light" | "dark") => {
+    setThemeState(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, loading, signUp, signIn, signInWithGoogle, resetPassword, logOut }}
+      value={{ user, loading, theme, setTheme, signUp, signIn, signInWithGoogle, resetPassword, logOut }}
     >
       {children}
     </AuthContext.Provider>

@@ -103,6 +103,10 @@ export default function MyLeaderboards() {
     );
   };
 
+  const handleSelectBoard = (index: number) => {
+    setCurrentLeaderboardIndex(index);
+  };
+
   return (
     <div className="my-leaderboards-container">
       {/* Header/Navigation */}
@@ -162,6 +166,22 @@ export default function MyLeaderboards() {
           <button className="nav-arrow" onClick={handleNext}>
             →
           </button>
+        </div>
+
+        {/* Dropdown Selector */}
+        <div className="dropdown-selector-container">
+          <label className="dropdown-label">Or select a leaderboard:</label>
+          <select 
+            className="leaderboard-dropdown" 
+            value={currentLeaderboardIndex}
+            onChange={(e) => handleSelectBoard(Number(e.target.value))}
+          >
+            {leaderboards.map((board, index) => (
+              <option key={board.id} value={index}>
+                {board.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Leaderboard Info */}

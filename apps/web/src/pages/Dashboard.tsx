@@ -4,18 +4,27 @@ import { useAuth } from "../context/AuthContext";
 import "./css/Dashboard_Dark.css";
 
 export default function Dashboard() {
-  const { user, logOut } = useAuth();
+  const { user, logOut, theme, setTheme } = useAuth();
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const [viewMode, setViewMode] = useState(false)
+  const [isEditingBoards, setIsEditingBoards] = useState(false);
+  const [selectedBoardIds, setSelectedBoardIds] = useState<number[]>(() => {
+    const saved = localStorage.getItem('dashboardBoards');
+    return saved ? JSON.parse(saved) : [1, 2, 3, 4];
+  });
 
   const handleLogout = async () => {
     await logOut();
     navigate("/login");
   };
 
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+  };
+
   // Mock data - will be replaced with real data later
-  const activeLeaderboards = [
+  const allLeaderboards = [
     {
       id: 1,
       name: "50 Workouts in 30 Days",
@@ -60,7 +69,38 @@ export default function Dashboard() {
       reward: "Book club champion",
       punishment: "Write book report for winner",
     },
+    {
+      id: 5,
+      name: "Morning Meditation Challenge",
+      progress: 15,
+      goal: 30,
+      rank: 1,
+      participants: 8,
+      daysLeft: 20,
+      reward: "Zen master title",
+      punishment: "Buy coffee for the group",
+    },
   ];
+
+  // Get displayed boards based on selection
+  const displayedBoards = allLeaderboards.filter(board => selectedBoardIds.includes(board.id));
+  const activeLeaderboards = displayedBoards.length > 0 ? displayedBoards : allLeaderboards.slice(0, 4);
+
+  const handleBoardToggle = (boardId: number) => {
+    setSelectedBoardIds(prev => {
+      if (prev.includes(boardId)) {
+        return prev.filter(id => id !== boardId);
+      } else {
+        return [...prev, boardId];
+      }
+    });
+  };
+
+  const handleSaveSelection = () => {
+    setIsEditingBoards(false);
+    // Save to localStorage
+    localStorage.setItem('dashboardBoards', JSON.stringify(selectedBoardIds));
+  };
 
   // Find biggest opponent (person right above you in highest ranking leaderboard)
   const biggestOpp = {
@@ -108,9 +148,6 @@ export default function Dashboard() {
                   </button>
                   <button className="dropdown-item" onClick={() => navigate("/settings")}>
                     Settings
-                  </button>
-                  <button className="dropdown-item" onClick={() => setViewMode(true)}>
-                    Dark Mode
                   </button>
                   <div className="dropdown-divider" />
                   <button className="dropdown-item logout" onClick={handleLogout}>
@@ -187,8 +224,46 @@ export default function Dashboard() {
           <section className="leaderboards-section">
             <div className="section-header">
               <h3 className="section-title">Your Active Leaderboards</h3>
-              <button className="view-all-btn" onClick={() => navigate("/my-leaderboards")}>View All →</button>
+              <div className="section-header-actions">
+                {allLeaderboards.length >= 5 && !isEditingBoards && (
+                  <button className="edit-boards-btn" onClick={() => setIsEditingBoards(true)}>
+                    ✏️ Edit
+                  </button>
+                )}
+                <button className="view-all-btn" onClick={() => navigate("/my-leaderboards")}>View All →</button>
+              </div>
             </div>
+
+            {/* Edit Mode */}
+            {isEditingBoards && allLeaderboards.length >= 5 && (
+              <div className="edit-boards-modal">
+                <div className="edit-modal-content">
+                  <h4 className="edit-modal-title">Select 4 boards to display on your dashboard</h4>
+                  <div className="boards-selection-grid">
+                    {allLeaderboards.map(board => (
+                      <label key={board.id} className="board-checkbox-item">
+                        <input
+                          type="checkbox"
+                          checked={selectedBoardIds.includes(board.id)}
+                          onChange={() => handleBoardToggle(board.id)}
+                          disabled={selectedBoardIds.length === 4 && !selectedBoardIds.includes(board.id)}
+                          className="board-checkbox"
+                        />
+                        <span className="board-checkbox-label">{board.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="edit-modal-actions">
+                    <button className="cancel-btn" onClick={() => setIsEditingBoards(false)}>
+                      Cancel
+                    </button>
+                    <button className="save-btn" onClick={handleSaveSelection}>
+                      Save Selection
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="leaderboards-grid">
               {activeLeaderboards.map((board) => (
                 <div key={board.id} className="leaderboard-card">
