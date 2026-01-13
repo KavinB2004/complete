@@ -240,7 +240,7 @@
   grid-template-columns: 350px 1fr;
   gap: 2rem;
   margin-bottom: 3rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 @media (max-width: 1024px) {
@@ -442,7 +442,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
-  flex: 1;
+  height: 500px;
 }
 
 @media (max-width: 768px) {
@@ -457,6 +457,7 @@
   padding: 1.5rem;
   border: 1px solid #3d4757;
   transition: all 0.3s;
+  height: 300px;
 }
 
 .leaderboard-card:hover {

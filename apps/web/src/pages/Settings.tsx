@@ -21,7 +21,13 @@ export default function Settings() {
       {/* Header/Navigation */}
       <header className="settings-header">
         <div className="header-content">
-          <h1 className="settings-logo" onClick={() => navigate("/")}>💪 Complete</h1>
+          <img 
+            src="/Complete Logo.png" 
+            alt="Complete Logo" 
+            className="settings-logo" 
+            onClick={() => navigate("/")}
+            style={{ cursor: 'pointer', height: '50px', width: 'auto' }}
+          />
           <nav className="settings-nav">
             <button className="nav-btn" onClick={() => navigate("/dashboard")}>Dashboard</button>
             <button className="nav-btn" onClick={() => navigate("/my-leaderboards")}>

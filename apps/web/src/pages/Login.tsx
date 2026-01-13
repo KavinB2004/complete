@@ -40,7 +40,12 @@ export default function Login() {
 
         {/* Main content */}
         <div className="hero-content">
-          <h1 className="hero-title">💪 Complete</h1>
+          <img 
+            src="/Complete Logo.png" 
+            alt="Complete Logo" 
+            className="hero-title" 
+            style={{ height: '60px', width: 'auto' }}
+          />
           <h2 className="hero-subtitle">Compete With Friends to Reach Your Goals</h2>
 
           {/* Feature cards with animation */}

@@ -94,7 +94,12 @@ export default function RetroRegister() {
         </a>
         <div className="retro-login-card">
           <div className="retro-header">
-            <h1 className="retro-logo">💪 Complete</h1>
+            <img 
+              src="/Complete Logo.png" 
+              alt="Complete Logo" 
+              className="retro-logo" 
+              style={{ height: '50px', width: 'auto' }}
+            />
             <h2 className="retro-title">Create Account</h2>
           </div>
 

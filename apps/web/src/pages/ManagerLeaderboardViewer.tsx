@@ -135,7 +135,13 @@ export default function ManagerLeaderboardViewer() {
       {/* Header/Navigation */}
       <header className="dashboard-header">
         <div className="header-content">
-          <h1 className="dashboard-logo" onClick={() => navigate("/")}>💪 Complete</h1>
+          <img 
+            src="/Complete Logo.png" 
+            alt="Complete Logo" 
+            className="dashboard-logo" 
+            onClick={() => navigate("/")}
+            style={{ cursor: 'pointer', height: '50px', width: 'auto' }}
+          />
           <nav className="dashboard-nav">
             <button className="nav-btn" onClick={() => navigate("/dashboard")}>
               Dashboard

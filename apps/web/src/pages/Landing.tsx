@@ -110,7 +110,12 @@ export default function Landing() {
         </div>
 
         <nav className="landing-nav">
-          <h1 className="nav-logo">💪 Complete</h1>
+          <img 
+            src="/Complete Logo.png" 
+            alt="Complete Logo" 
+            className="nav-logo" 
+            style={{ height: '50px', width: 'auto' }}
+          />
           <div className="nav-buttons">
             <button className="nav-login-btn" onClick={() => navigate("/login")}>
               Log In
@@ -488,7 +493,12 @@ export default function Landing() {
       <footer className="landing-footer">
         <div className="footer-content">
           <div className="footer-brand">
-            <h3 className="footer-logo">💪 Complete</h3>
+            <img 
+              src="/Complete Logo.png" 
+              alt="Complete Logo" 
+              className="footer-logo" 
+              style={{ height: '40px', width: 'auto' }}
+            />
             <p className="footer-tagline">Compete with friends. Reach your goals.</p>
           </div>
           <div className="footer-links">
